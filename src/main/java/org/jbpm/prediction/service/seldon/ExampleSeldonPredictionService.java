@@ -1,14 +1,8 @@
 package org.jbpm.prediction.service.seldon;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import org.jbpm.prediction.service.seldon.payload.PredictionRequest;
 import org.jbpm.prediction.service.seldon.payload.PredictionResponse;
 import org.kie.api.task.model.Task;
 
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
