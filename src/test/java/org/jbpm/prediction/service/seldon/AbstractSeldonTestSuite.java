@@ -1,45 +1,35 @@
-/*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package org.jbpm.prediction.service.seldon;
 
-package org.jbpm.prediction.service;
-
-import org.jbpm.prediction.service.seldon.ExampleSeldonPredictionService;
+import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.jbpm.prediction.service.seldon.examples.ExampleSeldonPredictionService;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.test.services.AbstractKieServicesTest;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.*;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 
+import java.io.IOException;
 import java.util.*;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-public abstract class SeldonPredictionServiceProcessTest extends AbstractKieServicesTest {
+public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
+
+    @ClassRule
+    public static WireMockClassRule wireMockRule = new WireMockClassRule(5000);
+
+    @Rule
+    public WireMockClassRule instanceRule = wireMockRule;
 
     private List<Long> instances = new ArrayList<>();
-
-    protected static void assertBetween(double value, double min, double max) {
-        assertTrue(value > min && value < max);
-    }
 
     @BeforeClass
     public static void setupOnce() {
         System.setProperty("org.jbpm.task.prediction.service", ExampleSeldonPredictionService.IDENTIFIER);
+        System.setProperty("org.jbpm.task.prediction.service.seldon.url", "http://localhost:5000");
     }
 
     @AfterClass
@@ -53,6 +43,7 @@ public abstract class SeldonPredictionServiceProcessTest extends AbstractKieServ
         processes.add("BPMN2-UserTask.bpmn2");
         return processes;
     }
+
 
     @Override
     public DeploymentUnit prepareDeploymentUnit() throws Exception {
@@ -85,4 +76,6 @@ public abstract class SeldonPredictionServiceProcessTest extends AbstractKieServ
 
         return new HashMap<>();
     }
+
+
 }

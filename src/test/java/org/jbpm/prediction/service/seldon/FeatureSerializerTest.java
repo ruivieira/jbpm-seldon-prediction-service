@@ -1,11 +1,10 @@
 package org.jbpm.prediction.service.seldon;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.jbpm.prediction.service.seldon.payload.PredictionRequest;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,28 +19,21 @@ public class FeatureSerializerTest {
 
     @Test
     public void testSingleFeatureSerialization() throws JsonProcessingException {
-        final PredictionRequest request = new PredictionRequest();
-        request.addFeatures(buildFeatures(1.0, 2500.0));
+        final List<List<Double>> features = new ArrayList<>();
+        features.add(buildFeatures(1.0, 2500.0));
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
-        String result = mapper.writeValueAsString(request);
-        System.out.println(result);
-        assertEquals("{\"data\":{\"ndarray\":[[1.0,2500.0]]}}", result);
+        final String request = PredictionRequest.build(features);
+        assertEquals("{\"data\":{\"ndarray\":[[1.0,2500.0]]}}", request);
     }
 
     @Test
     public void testMultipleFeatureSerialization() throws JsonProcessingException {
-        final PredictionRequest request = new PredictionRequest();
+        final List<List<Double>> features = new ArrayList<>();
 
-        request.addFeatures(buildFeatures(1.0, 2500.0));
-        request.addFeatures(buildFeatures(0.0, 1944.2));
+        features.add(buildFeatures(1.0, 2500.0));
+        features.add(buildFeatures(0.0, 1944.2));
 
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
-        String result = mapper.writeValueAsString(request);
-        System.out.println(result);
+        String result = PredictionRequest.build(features);
         assertEquals("{\"data\":{\"ndarray\":[[1.0,2500.0],[0.0,1944.2]]}}", result);
     }
 

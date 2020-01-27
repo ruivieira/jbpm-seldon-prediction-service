@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.prediction.service.seldon;
+package org.jbpm.prediction.service.seldon.examples;
 
 import org.kie.internal.task.api.prediction.PredictionService;
 
