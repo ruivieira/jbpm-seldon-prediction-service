@@ -1,5 +1,6 @@
-package org.jbpm.prediction.service.seldon;
+package org.jbpm.prediction.service.seldon.examples;
 
+import org.jbpm.prediction.service.seldon.AbstractSeldonPredictionService;
 import org.jbpm.prediction.service.seldon.payload.PredictionResponse;
 import org.kie.api.task.model.Task;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExampleSeldonPredictionService extends AbstractSeldonPredictionService{
+public class ExampleSeldonPredictionService extends AbstractSeldonPredictionService {
 
     public static final String IDENTIFIER = "SeldonPredictionService";
 
@@ -29,11 +30,22 @@ public class ExampleSeldonPredictionService extends AbstractSeldonPredictionServ
 
     @Override
     public Map<String, Object> parsePredictFeatures(PredictionResponse response) {
-        List<Double> singleFeature = response.getData().getOutcomes().get(0);
-        double o1 = singleFeature.get(0);
-        double o2 = singleFeature.get(1);
-
         Map<String, Object> result = new HashMap<>();
+        List<Double> features = new ArrayList<>();
+
+        if (response.getData().getArray()!=null) {
+
+            features = response.getData().getArray().get(0);
+
+        } else if (response.getData().getTensorData()!=null) {
+
+            features = response.getData().getTensorData().getValues();
+
+            System.out.println(features);
+        }
+
+        double o1 = features.get(0);
+        double o2 = features.get(1);
 
         if (o1 > o2) {
             result.put("outcome", true);
@@ -44,6 +56,5 @@ public class ExampleSeldonPredictionService extends AbstractSeldonPredictionServ
         }
 
         return result;
-
     }
 }

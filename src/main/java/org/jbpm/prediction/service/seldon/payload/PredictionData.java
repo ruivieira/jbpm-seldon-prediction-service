@@ -10,15 +10,26 @@ public class PredictionData {
     @JsonProperty("names")
     private final List<String> names = new ArrayList<>();
 
-    @JsonProperty("ndarray")
-    private final List<List<Double>> outcomes = new ArrayList<>();
+    @JsonProperty(value = "ndarray", required = false)
+    private List<List<Double>> array;
+    @JsonProperty(value = "tftensor", required = false)
+    private List<Byte> tftensor;
+    @JsonProperty(value = "tensor", required = false)
+    private PredictionTensorData tensorData;
+
+    public List<Byte> getTftensor() {
+        return tftensor;
+    }
 
     public List<String> getNames() {
         return names;
     }
 
-    public List<List<Double>> getOutcomes() {
-        return outcomes;
+    public List<List<Double>> getArray() {
+        return array;
     }
 
+    public PredictionTensorData getTensorData() {
+        return tensorData;
+    }
 }

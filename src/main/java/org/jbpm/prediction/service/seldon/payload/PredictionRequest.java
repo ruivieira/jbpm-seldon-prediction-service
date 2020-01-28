@@ -2,6 +2,9 @@ package org.jbpm.prediction.service.seldon.payload;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,4 +31,12 @@ public class PredictionRequest implements Serializable {
     public void addFeatures(List<Double> features) {
         this.features.add(features);
     }
+
+    public static String build(List<List<Double>> features) throws JsonProcessingException {
+        final PredictionRequest req = new PredictionRequest(features);
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
+        return mapper.writeValueAsString(req);
+    }
+
 }

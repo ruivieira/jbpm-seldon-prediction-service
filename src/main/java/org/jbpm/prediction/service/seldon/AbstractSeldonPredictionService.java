@@ -16,8 +16,6 @@
 
 package org.jbpm.prediction.service.seldon;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -60,7 +58,6 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         compositeConfiguration.addConfiguration(javaProperties);
         compositeConfiguration.addConfiguration(systemProperties);
-
         try {
             Configuration config = configs.properties(new File("seldon.properties"));
             compositeConfiguration.addConfiguration(config);
@@ -88,19 +85,13 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> map) {
         final List<List<Double>> features = buildPredictFeatures(task, map);
-        final PredictionRequest req = new PredictionRequest(features);
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
-
         try {
-            final String JSON = mapper.writeValueAsString(req);
-            final String stringResponse = predict.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.entity(JSON, MediaType.APPLICATION_JSON_TYPE), String.class);
-            final PredictionResponse response = mapper.readValue(stringResponse, PredictionResponse.class);
-            System.out.println(response.getData().getOutcomes());
+            final String json = PredictionRequest.build(features);
+            final String stringResponse = predict.request(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.entity(json, MediaType.APPLICATION_JSON_TYPE), String.class);
+            final PredictionResponse response = PredictionResponse.parse(stringResponse);
             final Map<String, Object> parsedResponse = parsePredictFeatures(response);
-
             return new PredictionOutcome((Double) parsedResponse.get("confidence"), 1.0, parsedResponse);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -68,7 +68,7 @@ An example implementation is provided as `ExampleSeldonPredictionService`. The t
 
 In the example service, `buildPredictFeatures` transforms `ActorId` and `price` into a list of category and price, that is: `["john", 1913.2] -> [[0.0, 1913.2]]`. The prediction service will then serialise the message, query the prediction and pass the response to `parsePredictFeatures`.
 
-The `/predict` endpoint will be hit with the following payload:
+The `/predict` endpoint will be hit with the following `POST` payload:
 
 ```json
 {
@@ -90,4 +90,18 @@ And a typical response from Seldon would be something like:
 }
 ```
 
-This gets parsed by the prediction service into a `PredictionResponse` object. The feature names can be accessed using `response.getData().getNames()` and the features with `response.getData().getOutcomes()`.
+This gets parsed by the prediction service into a `PredictionResponse` object. The feature names can be accessed using `response.getData().getNames()` and the features with `response.getData().getArray()`.
+
+### Supported response fields
+
+This prediction service supports the following Seldon response data types:
+
+* `ndarray`
+* `tensor`
+* `tftensor`
+
+`ndarray` response data will be available via `response.getData().getArray()`. `tensor` response data will be available via `response.getData().getTensor()` and `tftensor` will be available via `response.getData().getTfTensor()`.
+
+Althouth `ndarray` and `tensor` responses will be automatically deserialized into Java native data structures, `tftensor` responses will be available as a `List<Byte>` and further deserialization is left to the user.
+
+Metadata tags are also supported and, if available, can be accessed at `response.getMetadata().getTags()`.
