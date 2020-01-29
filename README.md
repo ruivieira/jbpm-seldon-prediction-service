@@ -23,6 +23,11 @@ org.jbpm.task.prediction.service.seldon.url="http://localhost:5000"
 
 Note that the Seldon URL just refers to the hostname, it does not include any endpoint.
 
+The confidence threshold can similarly be set using the key `org.jbpm.task.prediction.service.seldon.confidence_threshold`
+either on a `seldon.properties` file, as a Java system property or as a `-D` parameter.
+
+The concrete service implementation can get or change the threshold at runtime using the
+`.getConfidenceThreshold()` or `.setConfidenceThreshold()` respectively.   
 
  ## Installation
 
@@ -32,7 +37,7 @@ Note that the Seldon URL just refers to the hostname, it does not include any en
 $ mvn clean install
  ```
 
-and place it in the jBPM server's classpath.
+and place it in jBPM server's classpath.
 
 The example Human Task located in `test/resources/BPMN2-UserTask.bpmn2` can be imported into jBPM to run the example from the unit tests.
 
@@ -104,4 +109,5 @@ This prediction service supports the following Seldon response data types:
 
 Althouth `ndarray` and `tensor` responses will be automatically deserialized into Java native data structures, `tftensor` responses will be available as a `List<Byte>` and further deserialization is left to the user.
 
-Metadata tags are also supported and, if available, can be accessed at `response.getMetadata().getTags()`.
+Metadata tags from the response are also supported and, if available, can be accessed at `response.getMetadata().getTags()`.
+These will be available as a `Map<String, Object>` with tag names as keys and tag values as map values.

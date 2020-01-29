@@ -5,21 +5,72 @@
     <parent>
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm</artifactId>
-        <version>7.27.0.Final</version>
+        <version>7.33.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>jbpm-recommendation-smile-random-forest</artifactId>
+    <artifactId>jbpm-prediction-seldon</artifactId>
 
-    <name>jBPM :: Prediction :: Random Forest based prediction service</name>
-    <description>Random Forest based prediction service</description>
+    <name>jBPM :: Prediction ::Seldon based prediction service</name>
+    <description>Seldon based prediction service</description>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>ban-blacklisted-dependencies</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <includes combine.children="append">
+                                            <include>commons-logging:commons-logging</include>
+                                        </includes>
+                                    </bannedDependencies>
+                                </rules>
+                                <fail>true</fail>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
 
     <properties>
-        <smile.version>1.5.2</smile.version>
         <http.client.version>2.1.1</http.client.version>
         <commons.configuration>2.6</commons.configuration>
         <beanutils.version>1.9.4</beanutils.version>
         <wiremock.version>2.25.1</wiremock.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons.configuration}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${beanutils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tomakehurst</groupId>
+                <artifactId>wiremock-jre8-standalone</artifactId>
+                <version>${wiremock.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -111,17 +162,14 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
-            <version>${commons.configuration}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>${beanutils.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8-standalone</artifactId>
-            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
 

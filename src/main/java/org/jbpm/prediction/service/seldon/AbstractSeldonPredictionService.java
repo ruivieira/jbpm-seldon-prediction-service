@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,10 +42,13 @@ import java.util.Map;
 
 public abstract class AbstractSeldonPredictionService implements PredictionService {
 
-    private final String SELDON_URL;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSeldonPredictionService.class);
     protected final ResteasyClient client = new ResteasyClientBuilder().build();
     protected final ResteasyWebTarget predict;
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSeldonPredictionService.class);
+    private double confidenceThreshold = 1.0;
+
+    private static final String SELDON_URL_KEY = "org.jbpm.task.prediction.service.seldon.url";
+    private static final String CONFIDENCE_THRESHOLD_KEY = "org.jbpm.task.prediction.service.seldon.confidence_threshold";
 
 
     public AbstractSeldonPredictionService() {
@@ -65,7 +68,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
             logger.debug("Could not find the file 'seldon.properties'. Trying other configuration sources.");
         }
 
-        SELDON_URL = compositeConfiguration.getString("org.jbpm.task.prediction.service.seldon.url");
+        final String SELDON_URL = compositeConfiguration.getString(SELDON_URL_KEY);
 
         if (SELDON_URL == null) {
             final String errorMessage = "No Seldon endpoint URL specified";
@@ -77,6 +80,19 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
 
         predict = client.target(SELDON_URL).path("predict");
 
+        // set confidence threshold from configuration
+        final String CONFIDENCE_THRESHOLD = compositeConfiguration.getString(CONFIDENCE_THRESHOLD_KEY);
+
+        if (CONFIDENCE_THRESHOLD != null) {
+            try {
+                this.confidenceThreshold = Double.parseDouble(CONFIDENCE_THRESHOLD);
+                logger.info("Setting confidence threshold to " + this.confidenceThreshold);
+            } catch (NumberFormatException e) {
+                logger.error("Invalid confidence threshold in org.jbpm.task.prediction.service.seldon.confidence_threshold");
+            }
+        } else {
+            logger.info("Using default confidence threshold of 1.0");
+        }
     }
 
     @Override
@@ -91,7 +107,7 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
                     .post(Entity.entity(json, MediaType.APPLICATION_JSON_TYPE), String.class);
             final PredictionResponse response = PredictionResponse.parse(stringResponse);
             final Map<String, Object> parsedResponse = parsePredictFeatures(response);
-            return new PredictionOutcome((Double) parsedResponse.get("confidence"), 1.0, parsedResponse);
+            return new PredictionOutcome((Double) parsedResponse.get("confidence"), this.confidenceThreshold, parsedResponse);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,4 +123,12 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
     public abstract List<List<Double>> buildPredictFeatures(Task task, Map<String, Object> map);
 
     public abstract Map<String, Object> parsePredictFeatures(PredictionResponse response);
+
+    public double getConfidenceThreshold() {
+        return confidenceThreshold;
+    }
+
+    public void setConfidenceThreshold(double confidenceThreshold) {
+        this.confidenceThreshold = confidenceThreshold;
+    }
 }
