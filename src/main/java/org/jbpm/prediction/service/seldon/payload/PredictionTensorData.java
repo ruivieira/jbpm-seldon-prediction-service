@@ -26,10 +26,10 @@ import java.util.List;
  */
 public class PredictionTensorData {
 
-    @JsonProperty(value = "shape", required = false)
-    private int[] shape = new int[2];
-    @JsonProperty(value = "values", required = false)
-    private List<Double> values = new ArrayList<>();
+    @JsonProperty(value = "shape", required = true)
+    private final int[] shape = new int[2];
+    @JsonProperty(value = "values", required = true)
+    private final List<Double> values = new ArrayList<>();
 
     /**
      * Return the tensor's shape.

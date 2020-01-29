@@ -26,13 +26,13 @@ import java.util.Map;
  */
 public class PredictionMetadata {
 
-    @JsonProperty(value = "tags", required = false)
+    @JsonProperty(value = "tags")
     private final Map<String, Object> tags = new HashMap<>();
 
     /**
-     * Return the prediction response's metadata tags as a {@link Map<String, Object>}.
+     * Return the prediction response's metadata tags as a {@link Map}.
      *
-     * @return Prediction response's metadata tags as a {@link Map<String, Object>}
+     * @return Prediction response's metadata tags as a {@link Map}
      */
     public Map<String, Object> getTags() {
         return tags;

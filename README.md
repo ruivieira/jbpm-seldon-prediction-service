@@ -107,7 +107,7 @@ This prediction service supports the following Seldon response data types:
 
 `ndarray` response data will be available via `response.getData().getArray()`. `tensor` response data will be available via `response.getData().getTensor()` and `tftensor` will be available via `response.getData().getTfTensor()`.
 
-Althouth `ndarray` and `tensor` responses will be automatically deserialized into Java native data structures, `tftensor` responses will be available as a `List<Byte>` and further deserialization is left to the user.
+Although `ndarray` and `tensor` responses will be automatically deserialized into Java native data structures, `tftensor` responses will be available as a `List<Byte>` and further deserialization is left to the user.
 
 Metadata tags from the response are also supported and, if available, can be accessed at `response.getMetadata().getTags()`.
 These will be available as a `Map<String, Object>` with tag names as keys and tag values as map values.

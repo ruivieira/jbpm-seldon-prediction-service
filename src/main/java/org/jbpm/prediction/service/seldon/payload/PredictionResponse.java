@@ -30,7 +30,7 @@ public class PredictionResponse {
 
     @JsonProperty(value = "data", required = true)
     private final PredictionData data = new PredictionData();
-    @JsonProperty(value = "meta", required = false)
+    @JsonProperty(value = "meta")
     private final PredictionMetadata metadata = new PredictionMetadata();
 
     public PredictionResponse() {

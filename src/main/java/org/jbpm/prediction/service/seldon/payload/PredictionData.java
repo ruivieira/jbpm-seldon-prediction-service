@@ -29,11 +29,11 @@ public class PredictionData {
     @JsonProperty("names")
     private final List<String> names = new ArrayList<>();
 
-    @JsonProperty(value = "ndarray", required = false)
+    @JsonProperty(value = "ndarray")
     private List<List<Double>> array;
-    @JsonProperty(value = "tftensor", required = false)
+    @JsonProperty(value = "tftensor")
     private List<Byte> tftensor;
-    @JsonProperty(value = "tensor", required = false)
+    @JsonProperty(value = "tensor")
     private PredictionTensorData tensorData;
 
     /**

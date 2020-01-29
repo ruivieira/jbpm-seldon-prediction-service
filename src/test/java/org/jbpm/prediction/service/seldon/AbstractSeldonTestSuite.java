@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
 public class AbstractSeldonTestSuite extends AbstractKieServicesTest {
 
     @ClassRule
-    public static WireMockClassRule wireMockRule = new WireMockClassRule(5000);
+    public static final WireMockClassRule wireMockRule = new WireMockClassRule(5000);
 
     @Rule
     public WireMockClassRule instanceRule = wireMockRule;

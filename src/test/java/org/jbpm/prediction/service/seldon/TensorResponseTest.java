@@ -18,7 +18,6 @@ package org.jbpm.prediction.service.seldon;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -27,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 public class TensorResponseTest extends AbstractSeldonTestSuite {
 
     @Test
-    public void testTensorResponse() throws IOException {
+    public void testTensorResponse() {
         stubFor(post(urlEqualTo("/predict"))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
