@@ -21,11 +21,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Seldon's prediction metadata response deserialization result.
+ */
 public class PredictionMetadata {
 
     @JsonProperty(value = "tags", required = false)
     private final Map<String, Object> tags = new HashMap<>();
 
+    /**
+     * Return the prediction response's metadata tags as a {@link Map<String, Object>}.
+     *
+     * @return Prediction response's metadata tags as a {@link Map<String, Object>}
+     */
     public Map<String, Object> getTags() {
         return tags;
     }

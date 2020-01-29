@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Seldon's prediction data response deserialization result.
+ */
 public class PredictionData {
 
     @JsonProperty("names")
@@ -33,18 +36,39 @@ public class PredictionData {
     @JsonProperty(value = "tensor", required = false)
     private PredictionTensorData tensorData;
 
+    /**
+     * If available, returns a TFTensor response as a byte {@link List}, otherwise return null.
+     *
+     * @return Byte {@link List} corresponding to the packed TFTensor
+     */
     public List<Byte> getTftensor() {
         return tftensor;
     }
 
+    /**
+     * Returns the features names.
+     *
+     * @return List of feature names.
+     */
     public List<String> getNames() {
         return names;
     }
 
+    /**
+     * If the response is of type NDArray, return the two-dimensional NDArray as a {@link List} of {@link List<Double>},
+     * otherwise null.
+     *
+     * @return A two-dimensional list of {@link Double}
+     */
     public List<List<Double>> getArray() {
         return array;
     }
 
+    /**
+     * If the response is of type Tensor, return a {@link PredictionTensorData} object, otherwise null.
+     *
+     * @return Tensor data object
+     */
     public PredictionTensorData getTensorData() {
         return tensorData;
     }

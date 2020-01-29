@@ -21,6 +21,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Seldon's prediction response tensor data deserialization result.
+ */
 public class PredictionTensorData {
 
     @JsonProperty(value = "shape", required = false)
@@ -28,10 +31,20 @@ public class PredictionTensorData {
     @JsonProperty(value = "values", required = false)
     private List<Double> values = new ArrayList<>();
 
+    /**
+     * Return the tensor's shape.
+     *
+     * @return An array containing the tensor's shape
+     */
     public int[] getShape() {
         return shape;
     }
 
+    /**
+     * Return a the tensor's data.
+     *
+     * @return A {@link List<Double>} with the tensor's data
+     */
     public List<Double> getValues() {
         return values;
     }

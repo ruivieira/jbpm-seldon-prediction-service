@@ -26,6 +26,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Seldon's prediction request to be serialized.
+ */
 @JsonRootName(value = "data")
 public class PredictionRequest implements Serializable {
 
@@ -35,19 +38,41 @@ public class PredictionRequest implements Serializable {
         this(new ArrayList<>());
     }
 
+    /**
+     * Construct the request using a predefined 2D list of features.
+     *
+     * @param features A 2D list of numerical features
+     */
     public PredictionRequest(List<List<Double>> features) {
         this.features = features;
     }
 
+    /**
+     * Get the numerical features in this request.
+     *
+     * @return A 2D list of numerical features
+     */
     @JsonProperty("ndarray")
     public List<List<Double>> getFeatures() {
         return features;
     }
 
+    /**
+     * Add a list of features to the prediction request.
+     *
+     * @param features A 1D list of numerical features
+     */
     public void addFeatures(List<Double> features) {
         this.features.add(features);
     }
 
+    /**
+     * Serialise the request into a JSON {@link String} payload using a specified 2D list of features.
+     *
+     * @param features A 2D list of numerical features for the request
+     * @return A JSON String representation for the Seldon request payload
+     * @throws JsonProcessingException
+     */
     public static String build(List<List<Double>> features) throws JsonProcessingException {
         final PredictionRequest req = new PredictionRequest(features);
         final ObjectMapper mapper = new ObjectMapper();

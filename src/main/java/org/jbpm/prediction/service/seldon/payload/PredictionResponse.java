@@ -22,6 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+/**
+ * Seldon's prediction response deserialization result.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PredictionResponse {
 
@@ -34,14 +37,28 @@ public class PredictionResponse {
 
     }
 
+    /**
+     * Returns the data part of Seldon's response as a {@link PredictionData} object.
+     * @return Deserialized prediction data response object
+     */
     public PredictionData getData() {
         return data;
     }
 
+    /**
+     * Returns the metadata part of Seldon's response as a {@link PredictionMetadata} object.
+     * @return Deserialized prediction metadata response object
+     */
     public PredictionMetadata getMetadata() {
         return metadata;
     }
 
+    /**
+     * Builds a {@link PredictionResponse} object from a JSON response {@link String}.
+     * @param response Seldon's JSON response as a {@link String}
+     * @return Deserialized response as a {@link PredictionResponse}
+     * @throws IOException
+     */
     public static PredictionResponse parse(String response) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(response, PredictionResponse.class);

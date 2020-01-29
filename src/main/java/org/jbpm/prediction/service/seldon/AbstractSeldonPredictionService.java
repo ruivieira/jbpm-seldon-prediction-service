@@ -98,6 +98,18 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
     @Override
     public abstract String getIdentifier();
 
+    /**
+     * Returns a model prediction given the input data.
+     *
+     * A {@link PredictionRequest} is sent to the Seldon server containing the features built using the concrete
+     * implementation of {@link PredictionRequest#build(List)}. The response is deserialized by
+     * {@link PredictionResponse#parse(String)} and passed to {@link #parsePredictFeatures(PredictionResponse)}
+     * in order to build the {@link PredictionOutcome}.
+     *
+     * @param task Human task data
+     * @param map A map containing the input attribute names as keys and the attribute values as values.
+     * @return A {@link PredictionOutcome} containing the model's prediction for the input data.
+     */
     @Override
     public PredictionOutcome predict(Task task, Map<String, Object> map) {
         final List<List<Double>> features = buildPredictFeatures(task, map);
@@ -115,13 +127,34 @@ public abstract class AbstractSeldonPredictionService implements PredictionServi
         return new PredictionOutcome();
     }
 
+    /**
+     * Model training is not supported in this service with Seldon. This is a NO-OP.
+     */
     @Override
     public void train(Task task, Map<String, Object> map, Map<String, Object> map1) {
         // Training not supported
     }
 
+    /**
+     * Construct a list of numerical features which can be passed to Seldon with the provided
+     * task and input data.
+     * It returns a two-dimensional numerical list where each list element corresponds
+     * to a single prediction request's features.
+     * This is domain specific and must be implemented in the concrete service.
+     *
+     * @param task Human task data
+     * @param map A map containing the input attribute names as keys and the attribute values as values.
+     * @return A two-dimensional list of numerical features.
+     */
     public abstract List<List<Double>> buildPredictFeatures(Task task, Map<String, Object> map);
 
+    /**
+     * Builds the {@link PredictionOutcome} data from the deserialized Seldon response.
+     * This is domain specific and must be implemented in the concrete service.
+     *
+     * @param response Deserialized Seldon's response
+     * @return A {@link Map} as the {@link PredictionOutcome} data
+     */
     public abstract Map<String, Object> parsePredictFeatures(PredictionResponse response);
 
     public double getConfidenceThreshold() {

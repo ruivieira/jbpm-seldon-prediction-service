@@ -26,14 +26,6 @@ import static org.junit.Assert.assertEquals;
 
 public class NDArrayResponseTest extends AbstractSeldonTestSuite {
 
-    /**
-     * Insert an equal number of true and false samples, making
-     * sure the total number of samples is larger than the dataset
-     * size threshold. Since the dataset size
-     * threshold will have been met and the probability of true
-     * and false will be nearly equal, we expect confidence to be
-     * lower than 0.55 (55%).
-     */
     @Test
     public void testNDArrayResponse() throws IOException {
         stubFor(post(urlEqualTo("/predict"))

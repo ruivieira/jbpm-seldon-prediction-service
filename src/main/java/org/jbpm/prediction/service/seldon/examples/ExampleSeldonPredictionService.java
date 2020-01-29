@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Example concrete implementation of a Seldon prediction service.
+ */
 public class ExampleSeldonPredictionService extends AbstractSeldonPredictionService {
 
     public static final String IDENTIFIER = "SeldonPredictionService";
@@ -34,16 +37,30 @@ public class ExampleSeldonPredictionService extends AbstractSeldonPredictionServ
         return IDENTIFIER;
     }
 
+    /**
+     * Build a domain specific list of numerical features based on the input data.
+     *
+     * @param task Human task data
+     * @param map A map containing the input attribute names as keys and the attribute values as values.
+     * @return A 2D {@link List} of numerical features
+     */
     @Override
     public List<List<Double>> buildPredictFeatures(Task task, Map<String, Object> map) {
         List<List<Double>> result = new ArrayList<>();
         List<Double> single = new ArrayList<>();
-        single.add(Math.random() < 0.5 ? 1.0 : 0.0);
-        single.add(Math.random() * 2500.0);
+
+        single.add(map.get("ActorId").equals("john") ? 0.0 : 1.0);
+        single.add(Double.valueOf((Integer) map.get("level")));
         result.add(single);
         return result;
     }
 
+    /**
+     * Transfom the deserialised Seldon's response ({@link PredictionResponse}) into a
+     * {@link org.kie.internal.task.api.prediction.PredictionOutcome} data map.
+     * @param response Deserialized Seldon's response
+     * @return A map containing data for {@link org.kie.internal.task.api.prediction.PredictionOutcome}
+     */
     @Override
     public Map<String, Object> parsePredictFeatures(PredictionResponse response) {
         Map<String, Object> result = new HashMap<>();
